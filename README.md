@@ -5,6 +5,8 @@ Explore finger haptics with Raspberry Pi, Threejs, and Oculus Quest.<br>
 
 Unlike other projects (eg. Threejs-VR-Sensors, Threejs-VR-Carbon-Dioxide-Sensor) where sensors send data to a web browser, this one sends data from a web browser to an output haptic device. This repository is for experimenters interested in interfacing I2C devices from Raspberry Pi to wifi devices (eg. Oculus Quest).<br>
 
+(The green wires are wire wrap wires. Flexible at 30AWG and useful for rapid prototyping.)<br>
+
 ## Hardware
 
 Pi Zero W (model 3B+ works)<br>
@@ -64,3 +66,5 @@ https://shop.pimoroni.com/products/drv2605l-linear-actuator-haptic-breakout
 https://github.com/pimoroni/drv2605-python
 
 https://ai.facebook.com/blog/hand-tracking-deep-neural-networks/
+
+https://en.wikipedia.org/wiki/Wire_wrap
