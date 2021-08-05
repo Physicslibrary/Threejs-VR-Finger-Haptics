@@ -1,7 +1,7 @@
 # Threejs-VR-Finger-Haptics
 Explore finger haptics with Raspberry Pi, Threejs, and Oculus Quest.<br>
 
-image
+<img src="1.jpg" width="512">
 
 Unlike other projects (eg. Threejs-VR-Sensors, Threejs-VR-Carbon-Dioxide-Sensor) where sensors send data to a web browser, this one sends data from a web browser to an output haptic device. This repository is for experimenters interested in interfacing I2C devices from Raspberry Pi to wifi devices (eg. Oculus Quest).<br>
 
