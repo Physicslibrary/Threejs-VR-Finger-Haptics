@@ -1,0 +1,223 @@
+<!--
+
+threejs_vr_finger_haptics.html
+
+https://github.com/Physicslibrary/Threejs-VR-Finger-Haptics
+
+MIT License
+
+Copyright (c) 2021 Hartwell Fong
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+August 2021
+
+System Requirements
+
+Oculus Quest (tested Quest 1, "delay>72" is based on framerate of Quest 1, no controllers)
+
+Oculus Browser >16.3 (Quest update 31.1)
+
+Not sure if Oculus Browser needs to be configured for WebXR like in the early days.
+If examples do not work, type "chrome://flags" in Oculus Browser and search for "webxr".
+"WebXR experiences with hand and joints tracking" and "WebXR Layers" are enabled.
+
+threejs-vr-finger-hptics.html works with three.js r131.
+
+Important - Javascript codes for this project are dependent on "WebXR Hand Input Module - Level 1", as of today,
+is an unstable API (https://www.w3.org/TR/webxr-hand-input-1/). Codes may stop working after Oculus Browser or threejs update.
+
+Credits
+
+https://threejs.org/
+
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js vr finger haptic</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+		<link type="text/css" rel="stylesheet" href="main.css">
+	</head>
+	<body>
+
+	<div id="info">
+	<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> VR Finger Haptics<br/>
+	(Oculus Browser 15.4+, no controllers, use hand tracking to enter VR)
+	</div>
+
+<script type="module">
+
+import * as THREE from '../build/three.module.js';
+import { VRButton } from './jsm/webxr/VRButton.js';
+import { OculusHandModel } from './jsm/webxr/OculusHandModel.js';
+import { createText } from './jsm/webxr/Text2D.js';
+
+var container;
+var camera, scene, renderer;
+var hand1, hand2;
+	
+var delay = 0;
+var hello;
+var ws;
+
+var finger_x, finger_y, finger_z;
+var distance;
+
+init();
+animate();
+
+function init() {
+
+    ws = new WebSocket('wss://x.x.x.x:8000');	      // raspberry pi ip address, "ifconfig" in a terminal to find x.x.x.x
+//	ws = new WebSocket('wss://127.0.0.1:8000');			// raspberry pi localhost
+
+//	ws.onopen = function() {
+//	console.log("websocket onopen");
+//	};
+
+//	ws.onclose = function() {
+//	console.log("websocket onclose");
+//	};
+
+//	ws.onmessage = function(event) {
+//	console.log(event.data);	
+//	};
+	
+	scene = new THREE.Scene();
+	scene.background = new THREE.Color(0x505050);
+
+	camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 100);
+	camera.position.set(0, 1.3, 1);
+
+	scene.add( new THREE.HemisphereLight( 0x606060, 0x404040 ) );
+
+	const light = new THREE.DirectionalLight( 0xffffff );
+	light.position.set( 1, 1, -1 ).normalize();
+	scene.add( light );
+	
+// add a floor
+
+	var color = new THREE.Color(0x8ec683);
+	var floor = new THREE.GridHelper(8,8,color,color);
+	scene.add(floor);
+
+	renderer = new THREE.WebGLRenderer({antialias:true});
+	renderer.setPixelRatio(window.devicePixelRatio );
+	renderer.setSize(window.innerWidth, window.innerHeight);
+	renderer.outputEncoding = THREE.sRGBEncoding;	
+	renderer.xr.enabled = true;
+
+	document.body.appendChild(renderer.domElement);
+	document.body.appendChild(VRButton.createButton(renderer));
+
+	// hand 1
+
+	hand1 = renderer.xr.getHand( 0 );
+	hand1.add( new OculusHandModel( hand1 ) );
+	scene.add( hand1 );
+
+	// hand 2
+
+	hand2 = renderer.xr.getHand( 1 );
+	hand2.add( new OculusHandModel( hand2 ) );
+	scene.add( hand2 );
+
+	var text = createText('Morse code finger haptic', 0.05);
+	text.position.set( 0, 1.5, -1 );
+	scene.add( text );
+	text = createText('Poke "hello world"', 0.05);
+	text.position.set( 0, 1.4, -1 );
+	scene.add( text );
+	text = createText('Move finger away when LRA activates', 0.05);
+	text.position.set( 0, 1.3, -1 );
+	scene.add( text );
+	text = createText('To exit, look palm, pinch-hold index-finger-thumb', 0.05);
+	text.position.set( 0, 1.2, -1 );
+	scene.add( text );
+			
+	hello = createText('hello world',0.05);
+	hello.position.set(0.08, 1.3, -0.5);
+	scene.add(hello);
+
+	text = createText('.... . .-.. .-.. ---  .-- --- .-. .-.. -..',0.05);
+	text.position.set(0.25, 1.2, -0.5);
+	scene.add(text);
+
+	text = createText('International Morse Code', 0.05);
+	text.position.set( -0.45, 1.3, -0.5 );
+	scene.add( text );
+	
+	var letter = ["a .-  ","b -...","c -.-.","d -.. ","e .   ","f ..-.","g --. ","h ....","i ..  ","j .---","k -.- ","l .-..","m --  ","n -.  ","o --- ","p .--.","q --.-","r .-. ","s ... ","t -   ","u ..- ","v ...-","w .-- ","x -..-","y -.--","z --.."]
+
+	var i;
+	var k = 0;
+	var letter_text;
+	
+	for(i = 0; i < 13; i++){
+			letter_text = createText(letter[i],0.05);
+			letter_text.position.set(-0.5, 1.24-k, -0.5);
+			scene.add(letter_text);
+			k += 0.06;
+	}
+
+	k=0
+	for(i = 13; i < 26; i++){
+		letter_text = createText(letter[i],0.05);
+		letter_text.position.set(-0.3, 1.24-k, -0.5);
+		scene.add(letter_text);
+		k += 0.06;
+	}
+}
+
+function animate() {
+
+		renderer.setAnimationLoop( render );
+
+		}
+
+function render() {
+
+		renderer.render(scene, camera);
+
+		if(delay>72){
+
+			delay=0;
+
+			finger_x = (hand1.joints['index-finger-tip'].position.x)**2-(hello.position.x)**2;
+			finger_y = (hand1.joints['index-finger-tip'].position.y)**2-(hello.position.y)**2;
+			finger_z = (hand1.joints['index-finger-tip'].position.z)**2-(hello.position.z)**2;
+
+			distance = (finger_x + finger_y + finger_z)**0.5;
+
+			if(distance < 0.2){
+				ws.send("hello world");
+			}
+			
+		}
+		
+		delay++;
+		
+}
+
+		</script>
+	</body>
+</html>
