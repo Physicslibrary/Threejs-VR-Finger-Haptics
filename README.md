@@ -55,6 +55,23 @@ A terminal running "python morse.py" and its output. Once that is working, morse
 
 The terminal is running in "Raspberry Pi OS with desktop" on a Raspberry Pi 3B+. A full linux desktop is useful because a terminal is used to ssh into Pi Zero W, wget software, and a Chromium web browser to debug javascript codes (ctrl-shift-i). Chromium will output error messages about not able to run WebXR specific codes but will run enough for debugging.<br>
 
+(to finish)<br>
+
+threejs_vr_finger_haptics.html is meant to run on a Raspberry Pi with websocketd and morse.py.<br>
+
+Need to generate two files key.pem and cert.pem because WebXR will only run with https://.<br>
+
+openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem<br>
+
+./websocketd --port=8000 --ssl --sslkey=key.pem --sslcert=cert.pem --staticdir=. python morse.py<br>
+
+threejs_vr_finger_haptics.html in threejs examples directory<br>
+
+in examples directory, "mv index.html index1.html" to allow browser to "see" threejs_vr_finger_haptics.html file<br>
+
+"Enter VR" and poke at "hello world". If a finger is detected near "hello world", javascript ws.send("hello world") to websocketd to stdin in morse.py to convert to haptic morse code.<br>
+
+
 ## References
 
 Pi Zero W:<br>
