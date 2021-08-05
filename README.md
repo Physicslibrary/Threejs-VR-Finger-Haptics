@@ -39,9 +39,13 @@ sudo apt-get update<br>
 sudo apt-get install python-pip<br>
 sudo install i2c-tools<br>
 
+In a Terminal, "sudo i2cdetect -y 1" displays the hex addresses of I2C devices connected to the Pi. Properly wired, the Pimoroni DRV2605L breakout appears at hex address 0x5a.<br>
+
+On the side, the author has noticed Melexis MLX90614, in earlier project (https://github.com/Physicslibrary/Threejs-VR-Sensors), has the same address 0x5a. This could be an issue if two devices with the same address are connected to the same bus. The author may investigate what will happen if two 0x5a are connected. However, MLX90614 I2C address can be reconfigured.<br>
+
 ## Programming Pimoroni DRV2605L Linear Actuator Haptic Breakout
 
-
+Pimoroni's python scripts tap-tap-tap.py and test-waveform.py in https://github.com/pimoroni/drv2605-python/tree/master/examples are excellent examples to start with. The script morse.py is modeled after tap-tap-tap.py.<br>
 
 ## References
 
@@ -50,6 +54,8 @@ Pi Zero W:<br>
 https://www.raspberrypi.org/
 
 https://www.raspberrypi.org/documentation/usage/gpio/
+
+https://github.com/joewalnes/websocketd
 
 Pimoroni DRV2605L Linear Actuator Haptic Breakout:<br>
 
