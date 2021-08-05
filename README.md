@@ -47,7 +47,13 @@ On the side, the author has noticed Melexis MLX90614, in earlier project (https:
 
 ## Programming Pimoroni DRV2605L Linear Actuator Haptic Breakout
 
-Pimoroni's python scripts tap-tap-tap.py and test-waveform.py in https://github.com/pimoroni/drv2605-python/tree/master/examples are excellent examples to start with. The script morse.py is modeled after tap-tap-tap.py.<br>
+Pimoroni's python scripts tap-tap-tap.py and test-waveform.py in https://github.com/pimoroni/drv2605-python/tree/master/examples are excellent examples to learn from. The script morse.py is modeled from tap-tap-tap.py.<br>
+
+<img src="2.jpg" width="800">
+
+A terminal running "python morse.py" and its output. Once that is working, morse code dit "0" and dash "1" are converted to vibrations with drv2605.go(), time.sleep(), and drv2605.stop().<br>
+
+The terminal is running in "Raspberry Pi OS with desktop" on a Raspberry Pi 3B+. A full linux desktop is useful because a terminal is used to ssh into Pi Zero W, wget software, and a Chromium web browser to debug javascript codes (ctrl-shift-i). Chromium will output error messages about not able to run WebXR specific codes but will run enough for debugging.<br>
 
 ## References
 
