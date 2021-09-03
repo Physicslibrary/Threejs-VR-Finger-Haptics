@@ -91,3 +91,5 @@ https://github.com/pimoroni/drv2605-python
 https://ai.facebook.com/blog/hand-tracking-deep-neural-networks/
 
 https://en.wikipedia.org/wiki/Wire_wrap
+
+<br>Copyright (c) 2021 Hartwell Fong
